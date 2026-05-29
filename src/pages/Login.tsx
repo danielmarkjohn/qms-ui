@@ -1,76 +1,94 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { login } from '../api/auth.service'
 
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '../components/ui/card'
+
 export default function Login() {
-  const navigate = useNavigate()
+    const navigate = useNavigate()
 
-  const [phone, setPhone] = useState('+919845985821')
-  const [otp, setOtp] = useState('1234')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+    const [phone, setPhone] = useState('+919845985821')
+    const [otp, setOtp] = useState('1234')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
-  const handleLogin = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault()
+    const handleLogin = async (
+        e: React.SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault()
 
-    try {
-      setLoading(true)
-      setError('')
+        try {
+            setLoading(true)
+            setError('')
 
-      await login({
-        phone,
-        otp,
-      })
+            await login({
+                phone,
+                otp,
+            })
 
-      navigate('/dashboard')
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.detail || 'Login failed'
-      )
-    } finally {
-      setLoading(false)
+            navigate('/dashboard')
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.detail || 'Login failed'
+            )
+        } finally {
+            setLoading(false)
+        }
     }
-  }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <form
-        onSubmit={handleLogin}
-        className="w-full max-w-sm rounded bg-white p-6 shadow"
-      >
-        <h1 className="mb-4 text-2xl font-semibold">
-          Login
-        </h1>
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
+            <Card className="w-full max-w-md">
+                <CardHeader>
+                    <CardTitle>Login</CardTitle>
+                </CardHeader>
 
-        <input
-          className="mb-3 w-full rounded border p-2"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Phone"
-        />
+                <CardContent>
+                    <form
+                        onSubmit={handleLogin}
+                        className="space-y-4"
+                    >
+                        <Input
+                            placeholder="Phone Number"
+                            value={phone}
+                            onChange={(e) =>
+                                setPhone(e.target.value)
+                            }
+                        />
 
-        <input
-          className="mb-3 w-full rounded border p-2"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-          placeholder="OTP"
-        />
+                        <Input
+                            placeholder="OTP"
+                            value={otp}
+                            onChange={(e) =>
+                                setOtp(e.target.value)
+                            }
+                        />
 
-        {error && (
-          <p className="mb-3 text-sm text-red-500">
-            {error}
-          </p>
-        )}
+                        {error && (
+                            <p className="text-sm text-destructive">
+                                {error}
+                            </p>
+                        )}
 
-        <button
-          disabled={loading}
-          className="w-full rounded bg-black p-2 text-white"
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-    </div>
-  )
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={loading}
+                        >
+                            {loading
+                                ? 'Logging in...'
+                                : 'Login'}
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    )
 }
